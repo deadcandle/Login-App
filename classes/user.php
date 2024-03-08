@@ -2,7 +2,7 @@
     // Functie: classdefinitie User 
     // Auteur: Wigmans
 
-    class User{
+    class User {
 
         // Eigenschappen 
         public $username;
@@ -17,23 +17,25 @@
         }
 
         public function ShowUser() {
-            echo "<br>Username: $this->username<br>";
-            echo "<br>Password: $this->password<br>";
-            echo "<br>Email: $this->email<br>";
+            echo "<br>Username: ".$_SESSION['user']['user_username']."<br>";
+            echo "<br>Password: ".$_SESSION['user']['user_password']."<br>";
+            echo "<br>Email: ".$_SESSION['user']['user_email']."<br>";
         }
 
         public function RegisterUser() {
             $status = false;
             $errors=[];
-            if($this->username != "" || $this->password != "") {
+            if ($this->username != "" || $this->password != "") {
 
                 // Check user exist
-                if(true){
+                $conn = new mysqli("localhost", "root", "123456", "loginapp");
+                $result = ($conn -> query("SELECT * FROM users WHERE user_username = '$this->username'"));
+
+                if (mysqli_num_rows($result) > 0) {
                     array_push($errors, "Username bestaat al.");
                 } else {
                     // username opslaan in tabel login
-                    // INSERT INTO `user` (`username`, `password`, `role`) VALUES ('kjhasdasdkjhsak', 'asdasdasdasdas', '');
-                    // Manier 1
+                    $result = ($conn -> query("INSERT INTO users (user_username, user_password, user_email) values ('".$this->username."', '".$this->password."', '123456@student.zadkine.nl');"));
                     
                     $status = true;
                 }
@@ -63,11 +65,13 @@
             $conn = new mysqli("localhost", "root", "123456", "loginapp");
 
             // Zoek user in de table user
-            $result = $conn -> query("SELECT * FROM users WHERE user_username = '$this->username'");
+            $result = ($conn -> query("SELECT * FROM users WHERE user_username = '$this->username' and user_password = '$this->password'")) -> fetch_assoc();
+            $this->username = $result["user_username"];
+            $this->password = $result["user_password"];
 
             // Zet de user in de sessie
             session_start();
-            $_SESSION["user"] = $result -> fetch_assoc();
+            $_SESSION["user"] = $result;
             
             return true;
         }
