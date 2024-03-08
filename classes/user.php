@@ -9,11 +9,11 @@
         public $email;
         private $password;
         
-        function SetPassword($password){
-            $this->password = $password;
+        function SetPassword($password) {
+            $this -> password = $password;
         }
-        function GetPassword(){
-            return $this->password;
+        function GetPassword() {
+            return $this -> password;
         }
 
         public function ShowUser() {
@@ -22,10 +22,10 @@
             echo "<br>Email: $this->email<br>";
         }
 
-        public function RegisterUser(){
+        public function RegisterUser() {
             $status = false;
             $errors=[];
-            if($this->username != "" || $this->password != ""){
+            if($this->username != "" || $this->password != "") {
 
                 // Check user exist
                 if(true){
@@ -43,12 +43,12 @@
             return $errors;
         }
 
-        function ValidateUser(){
+        function ValidateUser() {
             $errors=[];
 
-            if (empty($this->username)){
+            if (empty($this->username)) {
                 array_push($errors, "Invalid username");
-            } else if (empty($this->password)){
+            } else if (empty($this->password)) {
                 array_push($errors, "Invalid password");
             }
 
@@ -57,31 +57,33 @@
             return $errors;
         }
 
-        public function LoginUser(){
+        public function LoginUser() {
 
             // Connect database
+            $conn = new mysqli("localhost", "root", "123456", "loginapp");
 
             // Zoek user in de table user
-           echo "Username:" . $this->username;
+            $result = $conn -> query("SELECT * FROM users WHERE user_username = '$this->username'");
 
-
-            // Indien gevonden dan sessie vullen
-
-
+            // Zet de user in de sessie
+            session_start();
+            $_SESSION["user"] = $result -> fetch_assoc();
+            
             return true;
         }
 
         // Check if the user is already logged in
         public function IsLoggedin() {
-            // Check if user session has been set
-            
+            if (isset($_SESSION["user"])) {
+                return true;
+            }
             return false;
         }
 
-        public function GetUser($username){
+        public function GetUser($username) {
             
 		    // Doe SELECT * from user WHERE username = $username
-            if (false){
+            if (false) {
                 //Indien gevonden eigenschappen vullen met waarden uit de SELECT
                 $this->username = 'Waarde uit de database';
             } else {
@@ -89,12 +91,11 @@
             }   
         }
 
-        public function Logout(){
+        public function Logout() {
             session_start();
-            // remove all session variables
-           
-
-            // destroy the session
+            
+            // remove all session variables / destroy the session
+            session_destroy();
             
             header('location: index.php');
         }

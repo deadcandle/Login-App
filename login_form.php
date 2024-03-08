@@ -1,34 +1,33 @@
 <?php
 	
 	// Is de login button aangeklikt?
-	if(isset($_POST['login-btn']) ){
+	if(isset($_POST['login-btn'])) {
 
 		require_once('classes/user.php');
 		$user = new User();
 
-		$user->username = $_POST['username'];
-		$user->SetPassword($_POST['password']);
+		$user -> username = $_POST['username'];
+		$user -> SetPassword($_POST['password']);
 
-		$user->ShowUser();
+		$user -> ShowUser();
 
 		// Validatie gegevens
-		$errors = $user->ValidateUser();
+		$errors = $user -> ValidateUser();
 
 		// Indien geen fouten dan inloggen
-		if(count($errors)== 0){
-			//Inlogen
-			if ($user->LoginUser()){
-				echo "LOgin ok";
+		if(count($errors) == 0) {
+			// Inlogen
+			if ($user -> LoginUser()) {
+				echo "Login ok";
 				// Ga naar pagina??
 				header("location: index.php");
-			} else
-			{
+			} else {
 				array_push($errors, "Login mislukt");
-				echo "LOgin NOT ok";
+				echo "Login NOT ok";
 			}
 		}
 
-		if(count($errors) > 0){
+		if(count($errors) > 0) {
 			$message = "";
 			foreach ($errors as $error) {
 				$message .= $error . "\\n";
@@ -39,7 +38,6 @@
 			<script>window.location = 'login_form.php'</script>";
 		
 		}
-		
 	}
 ?>
 
